@@ -75,7 +75,7 @@ object Recursion extends App{
   //Uses the method: https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
   //Incredible fast to calculate a large number of element. But triggers out of memory when trying
   //to find numbers in the order of billions
-  def findPrimesSieveOfErastothenes(n: Int): Int = {
+  def findPrimesSieveOfErastothenes(n: Int): Long = {
     var primeErastothenes = Array.fill(n)(true);
 
     def markProductsOfP(p: Int, x: Int): Unit = {
@@ -94,7 +94,6 @@ object Recursion extends App{
 
     processFactorsOfP()
 
-    var counter = 0
     def printPrimes(numbers: Seq[Boolean]): Long = {
       var index = 0
       var counter = 0
@@ -115,7 +114,6 @@ object Recursion extends App{
 //        println(x._2)
 //      }
 //    })
-    counter
   }
 
 
