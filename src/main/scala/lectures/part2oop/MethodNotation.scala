@@ -28,7 +28,7 @@ object MethodNotation extends App{
                                     // which has only one parameter (called syntactic sugar)
 
     //"operators" in scala
-    val tom = new Person("Tom", "FIght Club")
+    val tom = new Person("Tom", "FIght Club", 30)
   println( tom + mary)
   println( tom.+(mary))
 
