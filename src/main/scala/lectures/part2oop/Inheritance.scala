@@ -1,6 +1,6 @@
 package lectures.part2oop
 
-object InheritanceAndTraits extends App{
+object Inheritance extends App{
   class Animal {
     val creatureType = "wild"
     protected def eat = println("nomnom")
@@ -43,12 +43,10 @@ object InheritanceAndTraits extends App{
 
   //super: allows to call method on super class
 
-
   //Preventing overrides:
   //  1. Use final keyword at class level
   //  2. use final keyword for a class member
   //  3. use seal classes: allows subclasses only in the same file where the main class is defined
-
 
 
 }
