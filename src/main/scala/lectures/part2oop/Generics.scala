@@ -68,12 +68,4 @@ object Generics extends App {
 // lower bounded
 class Cage1[A >: Animal](animal: A)
 
-
-  val myList = new Cons[Int](1, new Cons(2, new Cons(3, new Cons(4, Empty))))
-
-  println(myList.filter(EvenFilter).toString)
-  println(myList.map(DuplicateTransformer).toString)
-  println(myList.flatMap(AnotherTransformer).toString)
-  val emptyList = Empty
-  println(emptyList.add(3).add(4).toString)
 }
