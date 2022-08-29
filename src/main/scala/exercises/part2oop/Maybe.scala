@@ -2,7 +2,7 @@ package exercises.part2oop
 
 import java.util.NoSuchElementException
 
-abstract class Maybe[+A] {
+sealed abstract class Maybe[+A] {
   def get(): A
   def map[B](f: A => B): Maybe[B]
   def flatMap[B](f: A => Maybe[B]): Maybe[B]
