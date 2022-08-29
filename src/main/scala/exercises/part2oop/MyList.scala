@@ -119,4 +119,11 @@ object MyList extends App {
   println(emptyList.add(3).add(4).sort((x, y)=> x - y))
   println(emptyList.add(3).add(4).zipWith(list, (x: Int, y: Int) => x + y).fold(0)(_ + _))
 
+  val anotherList = for {
+    n <- list
+    x <- myList
+  } yield n * x
+
+  println(anotherList)
+
 }
