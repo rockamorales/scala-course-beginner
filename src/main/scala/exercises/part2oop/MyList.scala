@@ -21,6 +21,14 @@ abstract class MyList[+A] {
   def map[B](transformer: A => B): MyList[B]
   def flatMap[B](transformer: A => MyList[B]): MyList[B]
 
+  def foreach(f: A => Unit): Unit
+
+  def sort(f: (A, A) => Int): MyList[A]
+  def zipWith[B, C](list: MyList[B], f: (A, B) => C): MyList[C]
+  def fold[B >: A](start: B): ((A, B) => B) => B
+  def fold1[B](start: B)(operator: (B, A) => B): B
+//    (f:(x: C, y: C) => C ) =>
+
 }
 
 case object Empty extends MyList[Nothing] {
@@ -33,6 +41,19 @@ case object Empty extends MyList[Nothing] {
   override def map[B](transformer: Nothing => B): MyList[B] = Empty
   override def flatMap[B](transformer: Nothing => MyList[B]): MyList[B] = Empty
   override def ++[B >: Nothing](newValues: MyList[B]): MyList[B] = newValues
+
+  override def foreach(f: Nothing => Unit): Unit = ()
+
+  override def sort(f: (Nothing, Nothing) => Int): MyList[Nothing] = Empty
+
+  override def zipWith[B, C](list: MyList[B], f: (Nothing, B) => C): MyList[C] = Empty
+
+  override def fold[A](start: A): ((Nothing, Nothing) => A) => A =
+    (f: ((Nothing, Nothing) => A)) => start
+  def fold1[A](start: A)(f: (Nothing, Nothing) => A) =
+    (f: ((Nothing, Nothing) => A)) => start
+
+  override def fold1[B](start: B)(operator: (B, Nothing) => B): B = start
 }
 case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
   override def isEmpty: Boolean = false
@@ -56,6 +77,33 @@ case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
   override def flatMap[B](transformer: A => MyList[B]): MyList[B] = {
     transformer(h) ++ t.flatMap(transformer)
   }
+
+  override def foreach(f: A => Unit): Unit = {
+    f(h)
+    t.foreach(f)
+  }
+
+  override def sort(compare: (A, A) => Int): MyList[A] = {
+    def insert(x: A, sortedList: MyList[A]): MyList[A] = {
+      if (sortedList.isEmpty) new Cons(x, Empty)
+      else if(compare(x, sortedList.head) <= 0) new Cons(x, sortedList)
+      else Cons(sortedList.head, insert(x, sortedList.tail))
+    }
+
+    val sortedTail = t.sort(compare)
+    insert(h, sortedTail)
+  }
+
+  override def zipWith[B, C](list: MyList[B], f: (A, B) => C): MyList[C] = {
+    if(list.isEmpty) Cons(f(h, list.head), Empty)
+    else Cons(f(h, list.head), t.zipWith(list.tail, f))
+  }
+
+  override def fold[B>:A](start: B): ( (A,B) => B) => B =
+    (f: (A, B) => B) => t.fold(f(h,start))(f)
+
+  override def fold1[B](start: B)(operator: (B, A) => B): B =
+    t.fold1(operator(start,h))(operator)
 }
 
 object MyList extends App {
@@ -65,6 +113,10 @@ object MyList extends App {
   println(myList.map(_ * 2).toString)
   println(myList.flatMap(x => Cons(x, Cons(x+1, Empty))).toString)
   val emptyList = Empty
-  println(emptyList.add(3).add(4).toString)
+  emptyList.add(3).add(4).foreach(println)
+  val list = emptyList.add(3).add(4);
+  println(emptyList.add(3).add(4).zipWith(list, (x: Int, y: Int) => x + y))
+  println(emptyList.add(3).add(4).sort((x, y)=> x - y))
+  println(emptyList.add(3).add(4).zipWith(list, (x: Int, y: Int) => x + y).fold(0)(_ + _))
 
 }
