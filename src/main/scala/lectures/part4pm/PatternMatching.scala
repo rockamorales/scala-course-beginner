@@ -1,4 +1,4 @@
-package lectures.part3fp
+package lectures.part4pm
 
 import scala.util.Random
 
@@ -19,6 +19,7 @@ object PatternMatching extends App {
 
   // 1. Decompose values
   case class Person(name: String, age: Int)
+
   val bob = Person("Bob", 20)
 
   //
@@ -30,13 +31,15 @@ object PatternMatching extends App {
   //1. cases are matched in order
   //2. if no case match a match error is thrown
   //3. Type is the unification of all types return in each in expression
-      // will find the lowest common ancestor for all types returned in cases
+  // will find the lowest common ancestor for all types returned in cases
   //PM works really well with case classes*
 
   //PM on sealed hierarchies
   sealed class Animal
-  case class Dog(breed: String ) extends Animal
-  case class Parrot(greeting: String ) extends Animal
+
+  case class Dog(breed: String) extends Animal
+
+  case class Parrot(greeting: String) extends Animal
 
   val animal: Animal = Dog("Terra nova")
   animal match {
@@ -61,27 +64,30 @@ object PatternMatching extends App {
    */
 
   trait Expr
+
   case class Number(n: Int) extends Expr
+
   case class Sum(e1: Expr, e2: Expr) extends Expr
+
   case class Prod(e1: Expr, e2: Expr) extends Expr
 
   def show(expr: Expr): String = {
     expr match {
       case Number(n) => s"$n"
-      case Prod(e1@Sum(_,_), e2@Number(_)) => s"( ${show(e1)} ) * ${show(e2)} "
-      case Prod(e1@Number(_), e2@Sum(_,_)) =>  s"${show(e1)} * ( ${show(e2)} )"
-      case Prod(e1@Sum(_,_), e2@Sum(_,_)) => s"(${show(e1)} ) * ( ${show(e2)} )"
+      case Prod(e1@Sum(_, _), e2@Number(_)) => s"( ${show(e1)} ) * ${show(e2)} "
+      case Prod(e1@Number(_), e2@Sum(_, _)) => s"${show(e1)} * ( ${show(e2)} )"
+      case Prod(e1@Sum(_, _), e2@Sum(_, _)) => s"(${show(e1)} ) * ( ${show(e2)} )"
       case Prod(e1, e2) => s"${show(e1)} * ${show(e2)}"
       case Sum(e1, e2) => s"${show(e1)} + ${show(e2)} "
     }
   }
 
   println(show(Sum(Number(2), Number(3))))
-//  => 2 + 3
+  //  => 2 + 3
   println(show(Sum(Number(2), Sum(Number(3), Number(4)))))
-//  //=> 2 + 3 + 4
+  //  //=> 2 + 3 + 4
   println(show(Prod(Sum(Number(2), Number(1)), Number(3))))
-//  //=> (2 + 1) * 3
+  //  //=> (2 + 1) * 3
   println(show(Sum(Prod(Number(2), Number(1)), Number(3))))
   //=> 2 * 1 + 3
 
