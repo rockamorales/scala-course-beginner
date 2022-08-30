@@ -1,6 +1,4 @@
-package exercises.part2oop
-
-import java.util.NoSuchElementException
+package exercises.part3fp
 
 sealed abstract class Maybe[+A] {
   def get(): A
